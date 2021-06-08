@@ -1,0 +1,100 @@
+plugins {
+    id 'java'
+
+    // Publish the generated resources as Maven Artifacts
+    // See: https://docs.gradle.org/5.0/userguide/publishing_overview.html#publishing_overview
+    id 'maven-publish'
+}
+
+
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+def vendorName = "bsinou"
+def artifactID = 'cells-java-client'
+def sdkJavaSpecVersion = '0.1'
+def sdkJavaVersion = ownVersions['java.client']
+
+// Also publish sources and Javadoc
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+// Skip integration tests by default
+test {
+    if (System.properties['test.profile'] != 'integration') {
+        exclude '**/integration/*'
+    }
+}
+
+
+publishing {
+    publications {
+        CellsSdk(MavenPublication) {
+            from components.java
+            groupId 'org.sinou.cells'
+            artifactId 'cells-java-client'
+            version = sdkJavaVersion
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Provide a simple Java-only client for test and examples.')
+                root.appendNode('name', 'Cells SDK for Java')
+                root.appendNode('url', 'https://pydio.com')
+
+                root.children().last() + rootProject.getBasePom(sdkJavaRepoURL)
+            }
+        }
+    }
+}
+
+jar {
+    manifest {
+        attributes('Specification-Title': 'Cells SDK for Java',
+                'Specification-Version': sdkJavaSpecVersion,
+                'Specification-Vendor': vendorName,
+                'Implementation-Title': artifactID,
+                'Implementation-Vendor': vendorName,
+                'Implementation-Version': sdkJavaVersion)
+    }
+}
+
+dependencies {
+
+    if (useLocalSdkJava){
+        implementation project(":sdk-java")
+        // println "[DEBUG] Using local java SDK"
+    } else {
+        println "[WARNING] **Not** using local SDK "
+        implementation "com.pydio.cells:cells-sdk-java:${ownVersions['java.sdk']}"
+        // println "[DEBUG] Retrieve java sdk from maven repo"
+    }
+
+    // Set of carefully chosen third-party libraries
+
+    // When running with android these are provided by the platform
+    implementation 'com.amazonaws:aws-java-sdk-core:1.11.1030'
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.11.1030'
+
+    implementation 'io.swagger:swagger-annotations:1.6.2'
+    implementation 'com.metaparadigm:json-rpc:1.0'
+    
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'io.gsonfire:gson-fire:1.8.5'
+    implementation 'org.threeten:threetenbp:1.4.5'
+
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.squareup.okhttp:logging-interceptor:2.7.5'
+
+    implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    implementation 'commons-codec:commons-codec:1.15'
+
+    // Use JUnit test framework
+    testImplementation 'junit:junit:4.13.2'
+    // When running with android these are provided by the platform
+    testImplementation 'com.amazonaws:aws-java-sdk-core:1.11.1030'
+    testImplementation 'com.amazonaws:aws-java-sdk-s3:1.11.1030'
+
+}

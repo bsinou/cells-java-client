@@ -1,0 +1,75 @@
+buildscript {
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+}
+
+plugins {
+    // Publish the generated resources as Maven Artifacts.
+    // See: https://docs.gradle.org/current/userguide/publishing_setup.html#publishing_overview and: https://docs.gradle.org/current/userguide/dependency_management_terminology.html#sub:terminology_component
+    id 'maven-publish'
+}
+
+
+def versionProperties = new Properties()
+versionProperties.load(new FileInputStream(rootProject.file("versions.properties")))
+
+// Manage optional local sdk-java submodule
+def sdkJavaCheck = new File( 'sdk-java/sdk-java.gradle' )
+
+// Expose custom properties to all modules in the project.
+ext {
+    githubUrl = 'https://github.com/bsinou/cells-java-client.git'
+
+    // Expose properties retrieved from files to child projects
+    ownVersions = versionProperties
+
+    // Shortcut to enable building the Android layers without checking out the sdk-java repository
+    useLocalSdkJava = sdkJavaCheck.exists()
+
+    commonsCodec = "1.15"
+
+    junit = "4.13.2"
+    gtruth = "1.1.2"
+}
+
+allprojects {
+
+    repositories {
+
+        // Typically useful when working on the Java SDK so that we can use updated code without publishing to bintray.
+        mavenLocal()
+
+        // Using both google and maven Central to resolve dependencies.
+        google()
+        mavenCentral()
+    }
+}
+
+// Pre-create generic common pom configuration:
+ext.getBasePom = { repoURL  ->
+    return {
+        licenses {
+            license {
+                name "The Apache Software License, Version 2.0"
+                url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                distribution "repo"
+            }
+        }
+
+        developers {
+            developer {
+                id "bsinou"
+                name "Bruno Sinou"
+                email "bruno.sinou@posteo.de"
+            }
+        }
+
+        scm {
+            url repoURL
+        }
+    }
+}

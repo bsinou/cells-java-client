@@ -1,0 +1,13 @@
+*/build/
+*/bin/
+
+
+.gradle
+.idea
+
+local.properties
+.project
+.settings
+
+java-client/.classpath
+java-client/.settings
