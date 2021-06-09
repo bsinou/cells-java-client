@@ -7,20 +7,18 @@ import com.pydio.cells.api.Transport;
 import com.pydio.cells.api.callbacks.NodeHandler;
 import com.pydio.cells.api.ui.Message;
 import com.pydio.cells.api.ui.Node;
-import com.pydio.cells.client.SessionFactory;
-import com.pydio.cells.utils.tests.TestSessionFactory;
+import com.pydio.cells.client.ClientFactory;
+import com.pydio.cells.transport.ServerURLImpl;
+import com.pydio.cells.transport.StateID;
 import com.pydio.cells.utils.tests.RemoteServerConfig;
 import com.pydio.cells.utils.tests.TestConfiguration;
 import com.pydio.cells.utils.tests.TestUtils;
-import com.pydio.cells.transport.ServerURLImpl;
-import com.pydio.cells.transport.StateID;
-import com.pydio.cells.transport.auth.SimpleTokenStore;
-import com.pydio.cells.transport.auth.TokenService;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.sinou.cells.client.PojoClientFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -43,14 +41,14 @@ import javax.net.ssl.SSLHandshakeException;
  */
 public class BasicConnectionTest {
 
-    private SessionFactory factory;
+    private ClientFactory factory;
     private TestConfiguration config;
     private String testRunID;
 
     @Before
     public void setup() {
         testRunID = LocalTestUtils.getRunID();
-        factory = LocalTestUtils.createFactory();
+        factory = new PojoClientFactory();
         config = LocalTestUtils.getConfig();
     }
 
@@ -151,7 +149,7 @@ public class BasicConnectionTest {
         }
 
         // Delete
-        msg = client.delete(conf.defaultWS, new String[] { "/" + name });
+        msg = client.delete(conf.defaultWS, new String[]{"/" + name});
         // Assert.assertNotNull(msg);
         // Assert.assertEquals("EMPTY", msg.type());
 
