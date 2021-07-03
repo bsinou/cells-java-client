@@ -13,6 +13,13 @@ if( sdkJavaCheck.exists() ) {
     println('[WARNING] Could not find local Java SDK')
 }
 
+// def sdkJavaCheck2 = new File( 'sdk-java' )
+// if( sdkJavaCheck2.exists() ) {
+//     println('Folder sdk-java exists')
+// } else {
+//     println('[WARNING] Could not find sdk-java folder, we are here: ${buildDir}')
+// }
+
 include ':java-client'
 
 /* Use custom names for the "build.gradle" file of child modules */

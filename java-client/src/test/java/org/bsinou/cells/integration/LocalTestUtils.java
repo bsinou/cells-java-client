@@ -1,8 +1,6 @@
 package org.bsinou.cells.integration;
 
 import com.pydio.cells.client.ClientFactory;
-import com.pydio.cells.transport.auth.SimpleTokenStore;
-import com.pydio.cells.transport.auth.TokenService;
 import com.pydio.cells.utils.tests.TestClientFactory;
 import com.pydio.cells.utils.tests.TestConfiguration;
 import com.pydio.cells.utils.tests.TestUtils;
@@ -33,7 +31,6 @@ public class LocalTestUtils {
         // TokenService tokens = new TokenService(new SimpleTokenStore());
         return new TestClientFactory();
     }
-
 
 }
 

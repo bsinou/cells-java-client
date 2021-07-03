@@ -9,8 +9,7 @@ import com.pydio.cells.client.ClientFactory;
 import com.pydio.cells.legacy.P8Client;
 import com.pydio.cells.transport.CellsTransport;
 import com.pydio.cells.transport.ClientData;
-import com.pydio.cells.transport.ServerFactory;
-import com.pydio.cells.transport.auth.Token;
+import com.pydio.cells.transport.auth.CredentialService;
 
 import org.sinou.cells.s3.PojoS3Client;
 
@@ -19,8 +18,9 @@ import org.sinou.cells.s3.PojoS3Client;
  */
 public class PojoClientFactory extends ClientFactory {
 
-    public PojoClientFactory(Store<Token> tokenStore, Store<Server> serverStore, Store<Transport> transportStore) {
-        super(tokenStore, serverStore, transportStore);
+    public PojoClientFactory(CredentialService credentialService, Store<Server> serverStore,
+            Store<Transport> transportStore) {
+        super(credentialService, serverStore, transportStore);
     }
 
     /**
@@ -31,10 +31,10 @@ public class PojoClientFactory extends ClientFactory {
     }
 
     /**
-     * Implement this: it is the single entry point to inject the S3 client
-     * that is platform specific
+     * Implement this: it is the single entry point to inject the S3 client that is
+     * platform specific
      */
-    protected CellsClient getCellsClient(CellsTransport transport){
+    protected CellsClient getCellsClient(CellsTransport transport) {
         return new CellsClient(transport, new PojoS3Client(transport));
     };
 
